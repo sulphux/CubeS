@@ -7,11 +7,11 @@ CubeC: client.o
 	gcc client.o -o CubeC
 
 serv.o: serv/serwer.c
-	gcc serv/serwer.c -o serv.o
+	gcc serv/serwer.c -lpthread -o serv.o
 
 client.o: client/client.c
-	gcc client/client.c -o client.o
+	gcc client/client.c -lpthread -o client.o
 
 clean:
-	rm -rf *.o
+	rm -rf serv.o client.o
 
