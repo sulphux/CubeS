@@ -2,11 +2,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#define LINUX
 
 #define SIZE_X 20
 #define SIZE_Y 10
 
+static struct termios old, new;
+
+void initTermios(int echo) 
+{
+  tcgetattr(0, &old); /* grab old terminal i/o settings */
+  new = old; /* make new settings same as old settings */
+  new.c_lflag &= ~ICANON; /* disable buffered i/o */
+  new.c_lflag &= echo ? ECHO : ~ECHO; /* set echo mode */
+  tcsetattr(0, TCSANOW, &new); /* use these new terminal i/o settings now */
+}
+
+void resetTermios(void) 
+{
+  tcsetattr(0, TCSANOW, &old);
+}
+
+char getch_(int echo) 
+{
+  char ch;
+  initTermios(echo);
+  ch = getchar();
+  resetTermios();
+  return ch;
+}
+
+char getch(void) 
+{
+  return getch_(0);
+}
+
+char getche(void) 
+{
+  return getch_(1);
+}
 
 const char board[SIZE_Y][SIZE_X] =
     {
@@ -53,6 +86,7 @@ struct player play0;
 /// DOWN...-3280
 /// LEFT...-3275
 /// RIGHT..-3277
+
 void clearScreen()
 {
   const char* CLEAR_SCREE_ANSI = "\e[1;1H\e[2J";
