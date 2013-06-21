@@ -1,19 +1,12 @@
+#include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <conio.h>
 #include <unistd.h>
-#define WINDOWS
-
-#ifdef LINUX
-#define CLR "clear"
-#endif // LINUX
-
-#ifdef WINDOWS
-#define CLR "cls"
-#endif // WINDOWS
+#define LINUX
 
 #define SIZE_X 20
 #define SIZE_Y 10
+
 
 const char board[SIZE_Y][SIZE_X] =
     {
@@ -33,6 +26,8 @@ void draw_board()
 {
     int x;
     int y;
+    putchar('\e');
+
     for(y=0;y<SIZE_Y;y++)
     {
         for(x=0;x<SIZE_X;x++)
@@ -68,6 +63,7 @@ int main(int argc, char *argv[])
 {
 
     printf("I wanna play a game...\n");
+    clearScreen();
     draw_board();
     char ch;
     putchar('X');
@@ -79,8 +75,8 @@ int main(int argc, char *argv[])
     putchar('\r');
     while((ch = getch()) != 113)
     {
-        putchar('Y');
+        draw_board();
     }
-        printf("%i", ch);
+    printf("%i", ch);
     return 0;
 }
