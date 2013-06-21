@@ -1,12 +1,12 @@
 #include<stdio.h>
-#include<string.h>    //strlen
-#include<stdlib.h>    //strlen
+#include<string.h>
+#include<stdlib.h>
 #include<sys/socket.h>
-#include<arpa/inet.h> //inet_addr
-#include<unistd.h>    //write
-#include<pthread.h> //for threading , link with lpthread
+#include<arpa/inet.h>
+#include<unistd.h>
+#include<pthread.h>
  
-//the thread function
+//funkcja watku:
 void *connection_handler(void *);
  
 int main(int argc , char *argv[])
@@ -14,7 +14,7 @@ int main(int argc , char *argv[])
     int socket_desc , client_sock , c , *new_sock;
     struct sockaddr_in server , client;
      
-    //Create socket
+    //Stworz socket
     socket_desc = socket(AF_INET , SOCK_STREAM , 0);
     if (socket_desc == -1)
     {
@@ -22,12 +22,12 @@ int main(int argc , char *argv[])
     }
     puts("Socket created");
      
-    //Prepare the sockaddr_in structure
+    //Przygotuj socket
     server.sin_family = AF_INET;
     server.sin_addr.s_addr = INADDR_ANY;
     server.sin_port = htons( 8888 );
      
-    //Bind
+    //Zlacz
     if( bind(socket_desc,(struct sockaddr *)&server , sizeof(server)) < 0)
     {
         //print the error message
@@ -36,10 +36,10 @@ int main(int argc , char *argv[])
     }
     puts("bind done");
      
-    //Listen
+    //nasluchuj
     listen(socket_desc , 3);
      
-    //Accept and incoming connection
+    //Akceptuj nadchodzace polaczenia
     puts("Waiting for incoming connections...");
     c = sizeof(struct sockaddr_in);
      
@@ -47,6 +47,7 @@ int main(int argc , char *argv[])
     //Accept and incoming connection
     puts("Waiting for incoming connections...");
     c = sizeof(struct sockaddr_in);
+
     while( (client_sock = accept(socket_desc, (struct sockaddr *)&client, (socklen_t*)&c)) )
     {
         puts("Connection accepted");
@@ -61,7 +62,7 @@ int main(int argc , char *argv[])
             return 1;
         }
          
-        //Now join the thread , so that we dont terminate before the thread
+        //dolacz watek 
         //pthread_join( sniffer_thread , NULL);
         puts("Handler assigned");
     }
@@ -76,26 +77,26 @@ int main(int argc , char *argv[])
 }
  
 /*
- * This will handle connection for each client
+ * Deklaracja watku
  * */
 void *connection_handler(void *socket_desc)
 {
-    //Get the socket descriptor
+    //Utworz deskryptor socket'u
     int sock = *(int*)socket_desc;
     int read_size;
     char *message , client_message[2000];
      
-    //Send some messages to the client
+    //Wiadomosci dla klientow
     message = "Greetings! I am your connection handler\n";
     write(sock , message , strlen(message));
      
     message = "Now type something and i shall repeat what you type \n";
     write(sock , message , strlen(message));
      
-    //Receive a message from client
+    //Odbierz wiadomosc
     while( (read_size = recv(sock , client_message , 2000 , 0)) > 0 )
     {
-        //Send the message back to client
+        //Wyslij wiadomosc
         write(sock , client_message , strlen(client_message));
     }
      
@@ -109,7 +110,7 @@ void *connection_handler(void *socket_desc)
         perror("recv failed");
     }
          
-    //Free the socket pointer
+    //Wyczysc pamiec pod socket
     free(socket_desc);
      
     return 0;
