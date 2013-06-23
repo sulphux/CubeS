@@ -1,0 +1,18 @@
+# depslib dependency file v1.0
+1372025593 source:/home/frendzel/Desktop/CubeS/client/client.c
+	<stdio.h>
+	<string.h>
+	<sys/socket.h>
+	<arpa/inet.h>
+	<time.h>
+	"../lib/konsola.h"
+	"../lib/defines.h"
+
+1372021033 /home/frendzel/Desktop/CubeS/lib/konsola.h
+	<termios.h>
+	<stdio.h>
+	<stdlib.h>
+	<unistd.h>
+
+1372025672 /home/frendzel/Desktop/CubeS/lib/defines.h
+
